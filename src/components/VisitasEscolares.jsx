@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import * as XLSX from 'xlsx';
 import '../styles/VisitasEscolares.css';
 
 export default function VisitasEscolares() {
@@ -58,6 +59,46 @@ export default function VisitasEscolares() {
     } else {
       setVisitasConListaVisible([...visitasConListaVisible, index]);
     }
+  };
+
+  const exportarAExcel = () => {
+    if (visitas.length === 0) {
+      alert('No hay registros para exportar');
+      return;
+    }
+
+    const datos = visitas.map(visita => {
+      const alumnosLista = visita.lista ? visita.lista.join(', ') : 'No especificada';
+      return {
+        'Escuela': visita.escuela,
+        'Fecha de visita': visita.fecha,
+        'Nivel educativo': visita.nivel,
+        'Grado': visita.grado,
+        'Grupo': visita.grupo,
+        'Cantidad de alumnos': visita.alumnos,
+        'Docente responsable': visita.docente,
+        'Teléfono de contacto': visita.telefono,
+        'Listado de alumnos': alumnosLista
+      };
+    });
+
+    const ws = XLSX.utils.json_to_sheet(datos);
+    
+    ws['!cols'] = [
+      { wch: 25 }, // Escuela
+      { wch: 15 }, // Fecha
+      { wch: 15 }, // Nivel
+      { wch: 10 }, // Grado
+      { wch: 10 }, // Grupo
+      { wch: 10 }, // Cantidad
+      { wch: 25 }, // Docente
+      { wch: 15 }, // Teléfono
+      { wch: 50 }  // Lista alumnos
+    ];
+
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Visitas Escolares");
+    XLSX.writeFile(wb, "visitas_escolares.xlsx");
   };
 
   return (
@@ -157,7 +198,18 @@ export default function VisitasEscolares() {
       </div>
 
       <div className="solicitudes-list">
-        <h3>Registros realizados:</h3>
+        <div className="list-header">
+          <h3>Registros realizados:</h3>
+          {visitas.length > 0 && (
+            <button 
+              className="export-button" 
+              onClick={exportarAExcel}
+              title="Exportar a Excel"
+            >
+              Exportar todos los registros a Excel
+            </button>
+          )}
+        </div>
         <ul>
           {visitas.map((v, i) => (
             <li key={i}>
