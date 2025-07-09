@@ -159,3 +159,36 @@
   margin-right: 500px; /* ajusta según el ancho del modal */
   transition: margin 0.3s ease;
 }
+
+.ver-lista-button {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
+}
+
+.ver-lista-button:hover {
+  background-color: #d70069;
+}
+
+.visita-lista {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: #f0f0f0;
+  border-radius: var(--border-radius);
+}
+
+.visita-lista ul {
+  margin-top: 0.5rem;
+  padding-left: 1.5rem;
+}
+
+.visita-lista li {
+  list-style-type: decimal;
+  padding: 0.2rem 0;
+}

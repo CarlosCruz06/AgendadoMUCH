@@ -16,6 +16,7 @@ export default function VisitasEscolares() {
   const [visitas, setVisitas] = useState([]);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [nombresAlumnos, setNombresAlumnos] = useState([]);
+  const [visitasConListaVisible, setVisitasConListaVisible] = useState([]);
 
   const enviarSolicitud = () => {
     const cantidad = parseInt(solicitud.alumnos);
@@ -49,6 +50,14 @@ export default function VisitasEscolares() {
       telefono: '',
       alumnos: ''
     });
+  };
+
+  const toggleListaAlumnos = (index) => {
+    if (visitasConListaVisible.includes(index)) {
+      setVisitasConListaVisible(visitasConListaVisible.filter(i => i !== index));
+    } else {
+      setVisitasConListaVisible([...visitasConListaVisible, index]);
+    }
   };
 
   return (
@@ -165,14 +174,24 @@ export default function VisitasEscolares() {
                   <span><strong>Teléfono:</strong> {v.telefono}</span>
                 </div>
                 {v.lista && (
-                  <div className="visita-lista">
-                    <strong>Lista de alumnos</strong>
-                    <ul>
-                      {v.lista.map((nombre, j) => (
-                        <li key={j}>{nombre}</li>
-                      ))}
-                    </ul>
-                  </div>
+                  <>
+                    <button 
+                      className="ver-lista-button" 
+                      onClick={() => toggleListaAlumnos(i)}
+                    >
+                      {visitasConListaVisible.includes(i) ? 'Ocultar listado' : 'Ver listado de alumnos'}
+                    </button>
+                    {visitasConListaVisible.includes(i) && (
+                      <div className="visita-lista">
+                        <strong>Lista de alumnos</strong>
+                        <ul>
+                          {v.lista.map((nombre, j) => (
+                            <li key={j}>{nombre || `Alumno ${j + 1} (sin nombre)`}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
             </li>
