@@ -2,35 +2,59 @@ import { useState } from 'react';
 import '../styles/VisitasEscolares.css';
 
 export default function VisitasEscolares() {
-  const [solicitud, setSolicitud] = useState({ 
-    escuela: '', 
+  const [solicitud, setSolicitud] = useState({
+    escuela: '',
     fecha: '',
     nivel: '',
     grado: '',
     grupo: '',
     docente: '',
-    telefono: ''
+    telefono: '',
+    alumnos: ''
   });
+
   const [visitas, setVisitas] = useState([]);
+  const [mostrarModal, setMostrarModal] = useState(false);
+  const [nombresAlumnos, setNombresAlumnos] = useState([]);
 
   const enviarSolicitud = () => {
+    const cantidad = parseInt(solicitud.alumnos);
     if (solicitud.escuela && solicitud.fecha && solicitud.nivel && solicitud.docente) {
-      setVisitas([...visitas, solicitud]);
-      setSolicitud({ 
-        escuela: '', 
-        fecha: '',
-        nivel: '',
-        grado: '',
-        grupo: '',
-        docente: '',
-        telefono: ''
-      });
+      if (cantidad > 0) {
+        setNombresAlumnos(Array(cantidad).fill(''));
+        setMostrarModal(true);
+      } else {
+        setVisitas([...visitas, solicitud]);
+        resetFormulario();
+      }
     }
+  };
+
+  const confirmarNombres = () => {
+    const nuevaVisita = { ...solicitud, lista: nombresAlumnos };
+    setVisitas([...visitas, nuevaVisita]);
+    resetFormulario();
+    setNombresAlumnos([]);
+    setMostrarModal(false);
+  };
+
+  const resetFormulario = () => {
+    setSolicitud({
+      escuela: '',
+      fecha: '',
+      nivel: '',
+      grado: '',
+      grupo: '',
+      docente: '',
+      telefono: '',
+      alumnos: ''
+    });
   };
 
   return (
     <div className="visitas-container">
       <h2>Registro de Visitas Escolares</h2>
+
       <div className="visitas-form">
         <div className="form-group">
           <label>Nombre de la escuela</label>
@@ -42,7 +66,7 @@ export default function VisitasEscolares() {
             required
           />
         </div>
-        
+
         <div className="form-group">
           <label>Fecha de visita</label>
           <input
@@ -52,7 +76,7 @@ export default function VisitasEscolares() {
             required
           />
         </div>
-        
+
         <div className="form-group">
           <label>Nivel educativo</label>
           <select
@@ -68,7 +92,7 @@ export default function VisitasEscolares() {
             <option value="Universidad">Universidad</option>
           </select>
         </div>
-        
+
         <div className="form-group">
           <label>Grado</label>
           <input
@@ -78,7 +102,7 @@ export default function VisitasEscolares() {
             onChange={(e) => setSolicitud({ ...solicitud, grado: e.target.value })}
           />
         </div>
-        
+
         <div className="form-group">
           <label>Grupo</label>
           <input
@@ -88,7 +112,17 @@ export default function VisitasEscolares() {
             onChange={(e) => setSolicitud({ ...solicitud, grupo: e.target.value })}
           />
         </div>
-        
+
+        <div className="form-group">
+          <label>Cantidad de alumnos</label>
+          <input
+            type="number"
+            placeholder="Ej. 30"
+            value={solicitud.alumnos}
+            onChange={(e) => setSolicitud({ ...solicitud, alumnos: e.target.value })}
+          />
+        </div>
+
         <div className="form-group">
           <label>Docente responsable</label>
           <input
@@ -99,7 +133,7 @@ export default function VisitasEscolares() {
             required
           />
         </div>
-        
+
         <div className="form-group">
           <label>Teléfono de contacto</label>
           <input
@@ -109,7 +143,7 @@ export default function VisitasEscolares() {
             onChange={(e) => setSolicitud({ ...solicitud, telefono: e.target.value })}
           />
         </div>
-        
+
         <button className="submit-button" onClick={enviarSolicitud}>Crear Registro</button>
       </div>
 
@@ -126,14 +160,54 @@ export default function VisitasEscolares() {
                 <div className="visita-details">
                   <span><strong>Nivel:</strong> {v.nivel}</span>
                   <span><strong>Grado/Grupo:</strong> {v.grado} {v.grupo}</span>
+                  <span><strong>Alumnos:</strong> {v.alumnos}</span>
                   <span><strong>Docente:</strong> {v.docente}</span>
                   <span><strong>Teléfono:</strong> {v.telefono}</span>
                 </div>
+                {v.lista && (
+                  <div className="visita-lista">
+                    <strong>Lista de alumnos:</strong>
+                    <ul>
+                      {v.lista.map((nombre, j) => (
+                        <li key={j}>{nombre}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </div>
             </li>
           ))}
         </ul>
       </div>
+
+      {mostrarModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h3>Lista de alumnos ({nombresAlumnos.length})</h3>
+            <div className="alumnos-lista">
+              {nombresAlumnos.map((nombre, index) => (
+                <div key={index} className="form-group">
+                  <label>Alumno {index + 1}</label>
+                  <input
+                    type="text"
+                    placeholder={`Nombre del alumno ${index + 1}`}
+                    value={nombre}
+                    onChange={(e) => {
+                      const nuevosNombres = [...nombresAlumnos];
+                      nuevosNombres[index] = e.target.value;
+                      setNombresAlumnos(nuevosNombres);
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
+            <div className="modal-actions">
+              <button onClick={confirmarNombres} className="submit-button">Guardar</button>
+              <button onClick={() => setMostrarModal(false)} className="cancel-button">Cancelar</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
