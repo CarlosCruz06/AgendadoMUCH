@@ -52,7 +52,7 @@ export default function VisitasEscolares() {
   };
 
   return (
-    <div className="visitas-container">
+    <div className={`visitas-container ${mostrarModal ? 'desplazar-contenedor' : ''}`}>
       <h2>Registro de Visitas Escolares</h2>
 
       <div className="visitas-form">
@@ -166,7 +166,7 @@ export default function VisitasEscolares() {
                 </div>
                 {v.lista && (
                   <div className="visita-lista">
-                    <strong>Lista de alumnos:</strong>
+                    <strong>Lista de alumnos</strong>
                     <ul>
                       {v.lista.map((nombre, j) => (
                         <li key={j}>{nombre}</li>

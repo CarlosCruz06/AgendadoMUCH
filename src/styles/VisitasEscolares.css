@@ -154,3 +154,8 @@
   border-radius: var(--border-radius);
   cursor: pointer;
 }
+
+.desplazar-contenedor {
+  margin-right: 500px; /* ajusta según el ancho del modal */
+  transition: margin 0.3s ease;
+}
