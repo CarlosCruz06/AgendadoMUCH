@@ -19,6 +19,7 @@ export default function VisitasEscolares() {
   const [nombresAlumnos, setNombresAlumnos] = useState([]);
   const [visitasConListaVisible, setVisitasConListaVisible] = useState([]);
 
+  // Enviar solicitud de visita
   const enviarSolicitud = () => {
     const cantidad = parseInt(solicitud.alumnos);
     if (solicitud.escuela && solicitud.fecha && solicitud.nivel && solicitud.docente) {
@@ -32,6 +33,7 @@ export default function VisitasEscolares() {
     }
   };
 
+  // Confirmar nombres de alumnos
   const confirmarNombres = () => {
     const nuevaVisita = { ...solicitud, lista: nombresAlumnos };
     setVisitas([...visitas, nuevaVisita]);
@@ -40,6 +42,7 @@ export default function VisitasEscolares() {
     setMostrarModal(false);
   };
 
+  // Resetear formulario
   const resetFormulario = () => {
     setSolicitud({
       escuela: '',
@@ -53,6 +56,7 @@ export default function VisitasEscolares() {
     });
   };
 
+  // Mostrar/ocultar lista de alumnos
   const toggleListaAlumnos = (index) => {
     if (visitasConListaVisible.includes(index)) {
       setVisitasConListaVisible(visitasConListaVisible.filter(i => i !== index));
@@ -61,6 +65,7 @@ export default function VisitasEscolares() {
     }
   };
 
+  // Exportar TODOS los registros a Excel
   const exportarAExcel = () => {
     if (visitas.length === 0) {
       alert('No hay registros para exportar');
@@ -85,15 +90,9 @@ export default function VisitasEscolares() {
     const ws = XLSX.utils.json_to_sheet(datos);
     
     ws['!cols'] = [
-      { wch: 25 }, // Escuela
-      { wch: 15 }, // Fecha
-      { wch: 15 }, // Nivel
-      { wch: 10 }, // Grado
-      { wch: 10 }, // Grupo
-      { wch: 10 }, // Cantidad
-      { wch: 25 }, // Docente
-      { wch: 15 }, // Teléfono
-      { wch: 50 }  // Lista alumnos
+      { wch: 25 }, { wch: 15 }, { wch: 15 }, 
+      { wch: 10 }, { wch: 10 }, { wch: 10 },
+      { wch: 25 }, { wch: 15 }, { wch: 50 }
     ];
 
     const wb = XLSX.utils.book_new();
@@ -101,10 +100,41 @@ export default function VisitasEscolares() {
     XLSX.writeFile(wb, "visitas_escolares.xlsx");
   };
 
+  // Exportar UN SOLO registro a Excel
+  const exportarRegistroIndividual = (index) => {
+    const visita = visitas[index];
+    const alumnosLista = visita.lista ? visita.lista.join(', ') : 'No especificada';
+    
+    const datos = [{
+      'Escuela': visita.escuela,
+      'Fecha de visita': visita.fecha,
+      'Nivel educativo': visita.nivel,
+      'Grado': visita.grado,
+      'Grupo': visita.grupo,
+      'Cantidad de alumnos': visita.alumnos,
+      'Docente responsable': visita.docente,
+      'Teléfono de contacto': visita.telefono,
+      'Listado de alumnos': alumnosLista
+    }];
+
+    const ws = XLSX.utils.json_to_sheet(datos);
+    
+    ws['!cols'] = [
+      { wch: 25 }, { wch: 15 }, { wch: 15 }, 
+      { wch: 10 }, { wch: 10 }, { wch: 10 },
+      { wch: 25 }, { wch: 15 }, { wch: 50 }
+    ];
+
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Visita Escolar");
+    XLSX.writeFile(wb, `visita_${visita.escuela}_${visita.fecha}.xlsx`.replace(/\s+/g, '_'));
+  };
+
   return (
     <div className={`visitas-container ${mostrarModal ? 'desplazar-contenedor' : ''}`}>
       <h2>Registro de Visitas Escolares</h2>
 
+      {/* Formulario de registro */}
       <div className="visitas-form">
         <div className="form-group">
           <label>Nombre de la escuela</label>
@@ -194,9 +224,12 @@ export default function VisitasEscolares() {
           />
         </div>
 
-        <button className="submit-button" onClick={enviarSolicitud}>Crear Registro</button>
+        <button className="submit-button" onClick={enviarSolicitud}>
+          Crear Registro
+        </button>
       </div>
 
+      {/* Lista de registros */}
       <div className="solicitudes-list">
         <div className="list-header">
           <h3>Registros realizados:</h3>
@@ -204,12 +237,13 @@ export default function VisitasEscolares() {
             <button 
               className="export-button" 
               onClick={exportarAExcel}
-              title="Exportar a Excel"
+              title="Exportar todos los registros"
             >
-              Exportar todos los registros a Excel
+              Exportar todos
             </button>
           )}
         </div>
+        
         <ul>
           {visitas.map((v, i) => (
             <li key={i}>
@@ -217,7 +251,15 @@ export default function VisitasEscolares() {
                 <div className="visita-header">
                   <span className="escuela">{v.escuela}</span>
                   <span className="fecha">{v.fecha}</span>
+                  <button 
+                    className="export-single-button"
+                    onClick={() => exportarRegistroIndividual(i)}
+                    title="Exportar este registro"
+                  >
+                    Exportar
+                  </button>
                 </div>
+
                 <div className="visita-details">
                   <span><strong>Nivel:</strong> {v.nivel}</span>
                   <span><strong>Grado/Grupo:</strong> {v.grado} {v.grupo}</span>
@@ -225,6 +267,7 @@ export default function VisitasEscolares() {
                   <span><strong>Docente:</strong> {v.docente}</span>
                   <span><strong>Teléfono:</strong> {v.telefono}</span>
                 </div>
+
                 {v.lista && (
                   <>
                     <button 
@@ -233,6 +276,7 @@ export default function VisitasEscolares() {
                     >
                       {visitasConListaVisible.includes(i) ? 'Ocultar listado' : 'Ver listado de alumnos'}
                     </button>
+                    
                     {visitasConListaVisible.includes(i) && (
                       <div className="visita-lista">
                         <strong>Lista de alumnos</strong>
@@ -251,6 +295,7 @@ export default function VisitasEscolares() {
         </ul>
       </div>
 
+      {/* Modal para lista de alumnos */}
       {mostrarModal && (
         <div className="modal-overlay">
           <div className="modal-content">
@@ -273,8 +318,12 @@ export default function VisitasEscolares() {
               ))}
             </div>
             <div className="modal-actions">
-              <button onClick={confirmarNombres} className="submit-button">Guardar</button>
-              <button onClick={() => setMostrarModal(false)} className="cancel-button">Cancelar</button>
+              <button onClick={confirmarNombres} className="submit-button">
+                Guardar
+              </button>
+              <button onClick={() => setMostrarModal(false)} className="cancel-button">
+                Cancelar
+              </button>
             </div>
           </div>
         </div>
