@@ -1,0 +1,38 @@
+.navbar {
+  background-color: var(--primary-color) !important;
+  padding: 1rem 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.navbar a {
+  color: var(--light-color);
+  text-decoration: none;
+  margin-right: 1.5rem;
+  font-weight: 500;
+  padding: 0.5rem 0;
+  position: relative;
+  transition: var(--transition);
+}
+
+.navbar a:hover {
+  color: var(--secondary-color);
+}
+
+.navbar a::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: var(--secondary-color);
+  transition: var(--transition);
+}
+
+.navbar a:hover::after {
+  width: 100%;
+}
+
+.logout-button{
+  background-color: #BC0026;
+}

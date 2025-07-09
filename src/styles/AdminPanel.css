@@ -1,0 +1,32 @@
+.admin-container {
+  background-color: white;
+  padding: 2rem;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  max-width: 800px;
+  margin: 2rem auto;
+}
+
+.admin-features {
+  margin-top: 2rem;
+}
+
+.admin-features li {
+  padding: 1rem 1.5rem;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+}
+
+.admin-features li::before {
+  content: '✓';
+  color: var(--success-color);
+  font-weight: bold;
+  margin-right: 1rem;
+  font-size: 1.2rem;
+}
+
+.admin-features li:hover {
+  background-color: var(--light-color);
+  transform: translateX(5px);
+}

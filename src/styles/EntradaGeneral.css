@@ -1,0 +1,38 @@
+.entrada-container {
+  background-color: white;
+  padding: 2rem;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  max-width: 800px;
+  margin: 2rem auto;
+}
+
+.entrada-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  align-items: flex-end;
+}
+
+.entrada-form input {
+  flex: 1;
+  min-width: 200px;
+  padding: 0.75rem;
+}
+
+.registros-list {
+  margin-top: 2rem;
+}
+
+.registros-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+}
+
+.registros-list li span:first-child {
+  font-weight: bold;
+  color: var(--primary-color);
+}

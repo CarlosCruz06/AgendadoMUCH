@@ -1,0 +1,43 @@
+.visitas-container {
+  background-color: white;
+  padding: 2rem;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  max-width: 800px;
+  margin: 2rem auto;
+}
+
+.visitas-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  align-items: flex-end;
+}
+
+@media (max-width: 768px) {
+  .visitas-form {
+    grid-template-columns: 1fr;
+  }
+}
+
+.visitas-form input {
+  width: 100%;
+  padding: 0.75rem;
+}
+
+.solicitudes-list {
+  margin-top: 2rem;
+}
+
+.solicitudes-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+}
+
+.solicitudes-list li span:first-child {
+  font-weight: bold;
+  color: var(--primary-color);
+}
