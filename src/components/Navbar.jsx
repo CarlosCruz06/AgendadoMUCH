@@ -13,7 +13,7 @@ export default function Navbar() {
       
       {user ? (
         <>
-          <Link to="/admin">Administrador</Link>
+          {/* <Link to="/admin">Administrador</Link> */}
           <button onClick={logout} className="logout-button">
             Cerrar Sesión
           </button>
