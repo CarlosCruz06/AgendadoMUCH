@@ -23,27 +23,52 @@ export default function EntradaGeneral() {
   ];
 
   const registrarEntrada = () => {
-    if (nombre.trim() && edad && genero && estado && telefono.trim()) {
-      const nuevoRegistro = {
-        id: Date.now(),
-        nombre,
-        edad,
-        genero,
-        estado,
-        telefono,
-        fecha: new Date().toLocaleString()
-      };
-      setRegistros([...registros, nuevoRegistro]);
-      setNombre('');
-      setEdad('');
-      setGenero('');
-      setEstado('');
-      setTelefono('');
+    const soloLetrasRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/;
+    const soloNumerosRegex = /^\d{10}$/;
+
+    if (!nombre.trim() || !soloLetrasRegex.test(nombre)) {
+      alert('El nombre solo debe contener letras y espacios.');
+      return;
     }
+
+    if (!edad || isNaN(edad) || edad <= 0) {
+      alert('Ingrese una edad válida.');
+      return;
+    }
+
+    if (!genero) {
+      alert('Seleccione un género.');
+      return;
+    }
+
+    if (!estado) {
+      alert('Seleccione un estado.');
+      return;
+    }
+
+    if (!telefono.trim() || !soloNumerosRegex.test(telefono)) {
+      alert('El teléfono debe tener exactamente 10 dígitos numéricos.');
+      return;
+    }
+
+    const nuevoRegistro = {
+      id: Date.now(),
+      nombre,
+      edad,
+      genero,
+      estado,
+      telefono,
+      fecha: new Date().toLocaleString()
+    };
+    setRegistros([...registros, nuevoRegistro]);
+    setNombre('');
+    setEdad('');
+    setGenero('');
+    setEstado('');
+    setTelefono('');
   };
 
   const descargarQR = (registro) => {
-    // Crear div oculto para renderizar QR
     const qrContainer = document.createElement('div');
     qrContainer.style.position = 'fixed';
     qrContainer.style.left = '-10000px';
@@ -60,7 +85,6 @@ export default function EntradaGeneral() {
       />
     );
 
-    // Esperar que React renderice antes de capturar con html2canvas
     setTimeout(async () => {
       const canvas = qrContainer.querySelector('canvas');
       if (!canvas) {
@@ -118,9 +142,9 @@ export default function EntradaGeneral() {
         </select>
         <input
           type="tel"
-          placeholder="Número de contacto"
+          placeholder="Número de contacto (10 dígitos)"
           value={telefono}
-          onChange={(e) => setTelefono(e.target.value)}
+          onChange={(e) => setTelefono(e.target.value.replace(/\D/g, '').slice(0, 10))}
         />
         <button onClick={registrarEntrada}>Registrar</button>
       </div>

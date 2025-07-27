@@ -36,3 +36,12 @@
   padding: 0;
   display: block;
 }
+
+@media (max-width: 600px) {
+  .home-container h2 {
+    font-size: 1.5rem; /* tamaño más pequeño para móviles */
+  }
+  .home-container p {
+    font-size: 0.9rem; /* tamaño más pequeño para móviles */
+  }
+}
