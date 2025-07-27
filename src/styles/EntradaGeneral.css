@@ -15,10 +15,28 @@
   align-items: flex-end;
 }
 
-.entrada-form input {
+.entrada-form input,
+.entrada-form select {
   flex: 1;
   min-width: 200px;
   padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+.entrada-form button {
+  padding: 0.75rem 1.5rem;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.entrada-form button:hover {
+  background-color: var(--primary-color-dark);
 }
 
 .registros-list {
@@ -27,9 +45,12 @@
 
 .registros-list li {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  gap: 0.25rem;
+  background-color: #f7f7f7;
+  margin-bottom: 1rem;
   padding: 1rem 1.5rem;
+  border-radius: 6px;
 }
 
 .registros-list li span:first-child {
