@@ -57,3 +57,13 @@
   font-weight: bold;
   color: var(--primary-color);
 }
+
+.entrada-form select {
+  appearance: none;
+  color: #686868;
+  background-color: white;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%22292%22%20height%3D%22192%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M287%2069L150%20191%205%2069h282z%22%20fill%3D%22%23666%22/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 0.65rem auto;
+}
