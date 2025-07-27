@@ -4,7 +4,7 @@
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   border-radius: var(--border-radius);
   margin: 2rem auto;
-  max-width: 800px;
+  max-width: 900px; /* aumenté un poco */
   box-shadow: var(--box-shadow);
 }
 
@@ -17,4 +17,22 @@
 .home-container p {
   font-size: 1.2rem;
   color: var(--dark-color);
+}
+
+.logos {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin: 0;
+  padding: 0;
+  flex-wrap: wrap; /* permite ajuste en pantallas pequeñas */
+}
+
+.logo1 {
+  width: 300px;
+  max-width: 100%; /* no se salga del contenedor en móviles */
+  height: auto;
+  margin: 0;
+  padding: 0;
+  display: block;
 }
