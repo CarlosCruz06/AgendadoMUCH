@@ -67,3 +67,8 @@
   background-position: right 0.75rem center;
   background-size: 0.65rem auto;
 }
+
+.entrada-form button:hover {
+  background-color: #017fa9; /* azul oscuro */
+  color: white; /* asegurar que texto siga blanco */
+}
