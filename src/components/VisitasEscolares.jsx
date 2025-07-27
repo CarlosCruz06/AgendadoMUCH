@@ -21,6 +21,44 @@ export default function VisitasEscolares() {
 
   // Enviar solicitud de visita
   const enviarSolicitud = () => {
+    const soloLetrasRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/;
+    const soloNumerosRegex = /^\d+$/;
+
+    if (!solicitud.fecha) {
+      alert('Seleccione una fecha de visita.');
+      return;
+    }
+
+    if (!solicitud.nivel) {
+      alert('Seleccione un nivel educativo.');
+      return;
+    }
+
+    if (solicitud.grado && !soloLetrasRegex.test(solicitud.grado)) {
+      alert('El grado solo debe contener letras.');
+      return;
+    }
+
+    if (!solicitud.docente.trim() || !soloLetrasRegex.test(solicitud.docente)) {
+      alert('El nombre del docente solo debe contener letras y espacios.');
+      return;
+    }
+
+    if (solicitud.telefono && (!/^\d{1,10}$/.test(solicitud.telefono))) {
+      alert('El teléfono debe tener solo dígitos (máximo 10).');
+      return;
+    }
+
+    if (!solicitud.alumnos.trim()) {
+      alert('Debe ingresar la cantidad de alumnos.');
+      return;
+    }
+
+    if (!/^\d+$/.test(solicitud.alumnos) || parseInt(solicitud.alumnos) <= 0) {
+      alert('La cantidad de alumnos debe ser un número positivo.');
+      return;
+    }
+
     const cantidad = parseInt(solicitud.alumnos);
     if (solicitud.escuela && solicitud.fecha && solicitud.nivel && solicitud.docente) {
       if (cantidad > 0) {
@@ -88,9 +126,9 @@ export default function VisitasEscolares() {
     });
 
     const ws = XLSX.utils.json_to_sheet(datos);
-    
+
     ws['!cols'] = [
-      { wch: 25 }, { wch: 15 }, { wch: 15 }, 
+      { wch: 25 }, { wch: 15 }, { wch: 15 },
       { wch: 10 }, { wch: 10 }, { wch: 10 },
       { wch: 25 }, { wch: 15 }, { wch: 50 }
     ];
@@ -104,7 +142,7 @@ export default function VisitasEscolares() {
   const exportarRegistroIndividual = (index) => {
     const visita = visitas[index];
     const alumnosLista = visita.lista ? visita.lista.join(', ') : 'No especificada';
-    
+
     const datos = [{
       'Escuela': visita.escuela,
       'Fecha de visita': visita.fecha,
@@ -118,9 +156,9 @@ export default function VisitasEscolares() {
     }];
 
     const ws = XLSX.utils.json_to_sheet(datos);
-    
+
     ws['!cols'] = [
-      { wch: 25 }, { wch: 15 }, { wch: 15 }, 
+      { wch: 25 }, { wch: 15 }, { wch: 15 },
       { wch: 10 }, { wch: 10 }, { wch: 10 },
       { wch: 25 }, { wch: 15 }, { wch: 50 }
     ];
@@ -234,8 +272,8 @@ export default function VisitasEscolares() {
         <div className="list-header">
           <h3>Registros realizados:</h3>
           {visitas.length > 0 && (
-            <button 
-              className="export-button" 
+            <button
+              className="export-button"
               onClick={exportarAExcel}
               title="Exportar todos los registros"
             >
@@ -243,7 +281,7 @@ export default function VisitasEscolares() {
             </button>
           )}
         </div>
-        
+
         <ul>
           {visitas.map((v, i) => (
             <li key={i}>
@@ -251,7 +289,7 @@ export default function VisitasEscolares() {
                 <div className="visita-header">
                   <span className="escuela">{v.escuela}</span>
                   <span className="fecha">{v.fecha}</span>
-                  <button 
+                  <button
                     className="export-single-button"
                     onClick={() => exportarRegistroIndividual(i)}
                     title="Exportar este registro"
@@ -270,13 +308,13 @@ export default function VisitasEscolares() {
 
                 {v.lista && (
                   <>
-                    <button 
-                      className="ver-lista-button" 
+                    <button
+                      className="ver-lista-button"
                       onClick={() => toggleListaAlumnos(i)}
                     >
                       {visitasConListaVisible.includes(i) ? 'Ocultar listado' : 'Ver listado de alumnos'}
                     </button>
-                    
+
                     {visitasConListaVisible.includes(i) && (
                       <div className="visita-lista">
                         <strong>Lista de alumnos</strong>
