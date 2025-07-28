@@ -1,6 +1,8 @@
+import { useEffect } from 'react'; // Asegúrate de tenerlo arriba
 import { useState } from 'react';
 import { QRCodeCanvas } from 'qrcode.react';
 import jsPDF from 'jspdf';
+// eslint-disable-next-line no-unused-vars
 import html2canvas from 'html2canvas';
 import ReactDOM from 'react-dom/client';
 import '../styles/EntradaGeneral.css';
@@ -22,7 +24,7 @@ export default function EntradaGeneral() {
     'Sonora', 'Tabasco', 'Tamaulipas', 'Tlaxcala', 'Veracruz', 'Yucatán', 'Zacatecas'
   ];
 
-  const registrarEntrada = () => {
+  const registrarEntrada = async () => {
     const soloLetrasRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/;
     const soloNumerosRegex = /^\d{10}$/;
 
@@ -58,15 +60,52 @@ export default function EntradaGeneral() {
       genero,
       estado,
       telefono,
-      fecha: new Date().toLocaleString()
+      fecha: new Date().toISOString().slice(0, 19).replace('T', ' ')
     };
+
+    // Guardar en frontend
     setRegistros([...registros, nuevoRegistro]);
+
+    // Limpiar inputs
     setNombre('');
     setEdad('');
     setGenero('');
     setEstado('');
     setTelefono('');
+
+    // Guardar en base de datos
+    try {
+      const res = await fetch('http://localhost:3001/api/entradas', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(nuevoRegistro)
+      });
+
+      if (res.ok) {
+        console.log('Registro guardado en base de datos');
+      } else {
+        alert('Error al guardar en base de datos');
+      }
+    } catch (error) {
+      alert('No se pudo conectar al servidor');
+      console.error(error);
+    }
   };
+
+  useEffect(() => {
+    const obtenerRegistros = async () => {
+      try {
+        const res = await fetch('http://localhost:3001/api/entradas');
+        const data = await res.json();
+        setRegistros(data);
+      } catch (error) {
+        console.error('Error al obtener registros:', error);
+      }
+    };
+
+    obtenerRegistros();
+  }, []);
+
 
   const descargarQR = (registro) => {
     const qrContainer = document.createElement('div');
