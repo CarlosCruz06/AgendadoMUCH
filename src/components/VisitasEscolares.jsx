@@ -1,8 +1,23 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import * as XLSX from 'xlsx';
 import '../styles/VisitasEscolares.css';
 
 export default function VisitasEscolares() {
+  useEffect(() => {
+    const fetchVisitas = async () => {
+      try {
+        const response = await fetch('http://localhost:3001/api/visitas-escolares');
+        const data = await response.json();
+        setVisitas(data); // Actualiza el estado con los datos de la base
+      } catch (error) {
+        console.error('Error al cargar visitas:', error);
+      }
+    };
+
+    fetchVisitas();
+  }, []);
+
+
   const [solicitud, setSolicitud] = useState({
     escuela: '',
     fecha: '',
@@ -72,9 +87,38 @@ export default function VisitasEscolares() {
   };
 
   // Confirmar nombres de alumnos
-  const confirmarNombres = () => {
+  const confirmarNombres = async () => {
     const nuevaVisita = { ...solicitud, lista: nombresAlumnos };
     setVisitas([...visitas, nuevaVisita]);
+
+    // Enviar a la base de datos
+    try {
+      const response = await fetch('http://localhost:3001/api/visitas-escolares', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          nombre_escuela: solicitud.escuela,
+          cantidad_alumnos: parseInt(solicitud.alumnos),
+          nivel_educativo: solicitud.nivel,
+          responsable: solicitud.docente,
+          telefono: solicitud.telefono,
+          fecha: solicitud.fecha,
+          lista: nombresAlumnos
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Error al guardar en la base de datos');
+      }
+
+      console.log('Registro guardado con éxito en la base de datos');
+    } catch (error) {
+      console.error(error);
+      alert('Ocurrió un error al guardar la visita escolar.');
+    }
+
     resetFormulario();
     setNombresAlumnos([]);
     setMostrarModal(false);
